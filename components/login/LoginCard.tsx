@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -12,18 +13,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
+import loginUser from "@/lib/loginUser";
 
 export default function LoginCard() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [userDetails, setUserDetails] = useState({
+    username: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const handleLogin = async () => {
+    if (!userDetails.username.trim() || !userDetails.password.trim()) {
+      toast.error("Username and password are required!");
+      return;
+    }
+    const loginData = userDetails;
+    setUserDetails({ username: "", password: "" });
+    setLoading(true);
+    toast.loading("Logging in...");
 
-  const handleLogin = () => {
-    console.log("Logging in with:", { email, password });
-    // Add authentication logic here
+    const response = await loginUser(loginData.username, loginData.password); // ✅ Call API function
+
+    if (response.success) {
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+      toast.dismiss();
+      toast.success("Login successful!");
+      router.push("/features/book-ride");
+    } else {
+      toast.dismiss();
+      toast.error(response.error);
+    }
+    setLoading(false);
   };
 
   return (
     <div className="w-full flex items-center justify-center ">
+      <Toaster position="top-center" />
       <Card className="w-[70%] shadow-lg border-none">
         <CardHeader className="text-center">
           <CardTitle className="text-5xl font-bold text-gray-800 dark:text-white">
@@ -37,13 +64,18 @@ export default function LoginCard() {
         <CardContent>
           <form className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="text">Username</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="text"
+                type="text"
+                placeholder="Enter your username"
+                value={userDetails.username}
+                onChange={(e) =>
+                  setUserDetails((prev) => ({
+                    ...prev,
+                    username: e.target.value,
+                  }))
+                }
                 className="bg-white dark:bg-gray-800"
               />
             </div>
@@ -53,8 +85,13 @@ export default function LoginCard() {
                 id="password"
                 type="password"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={userDetails.password}
+                onChange={(e) =>
+                  setUserDetails((prev) => ({
+                    ...prev,
+                    password: e.target.value,
+                  }))
+                }
                 className="bg-white dark:bg-gray-800"
               />
             </div>
@@ -72,8 +109,9 @@ export default function LoginCard() {
           <Button
             className="w-full bg-[#FEC400] hover:bg-yellow-500 text-black font-semibold"
             onClick={handleLogin}
+            disabled={loading}
           >
-            Log In
+            {loading ? "Loading..." : "Log In"}
           </Button>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Don't have an account?{" "}

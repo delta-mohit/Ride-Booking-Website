@@ -1,54 +1,34 @@
 "use client"; // ✅ Ensure the component runs only on the client
-
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import GoogleMapComponent from "@/components/maps/GoogleMaps";
+import getLocationSuggestion from "@/lib/getLocationSuggestion";
+import { Input } from "@/components/ui/input";
+import LocationSearch from "@/components/LocationSearch";
+import RideBook from "@/components/maps/RideBook";
 
-// ✅ Dynamically import `SimpleMap` to avoid SSR issues
-const SimpleMap = dynamic(() => import("@/components/maps/SimpleMap"), {
-  ssr: false,
-});
+// ✅ Dynamically import `MapsTest` to avoid SSR issues
 const MapsTest = dynamic(() => import("@/components/maps/MapsTest"), {
   ssr: false,
 });
 
 const Page = () => {
-  const [pickup, setPickup] = useState("khargpur");
-  const [destination, setDestination] = useState("kolkata");
+  const [pickup, setPickup] = useState("");
+  const [destination, setDestination] = useState("");
+  const handleLocationInput = async (query: string, type: string) => {
+    const data = await getLocationSuggestion(query);
+    if (type == "pickup") {
+      console.log("Pickup Suggestions :- ", data);
+    } else {
+      console.log("Pickup Suggestions :- ", data);
+    }
+  };
   return (
-    <div className="w-[95%] h-full gap-10 mx-auto py-5 flex">
+    <div className="w-[95%] h-full  gap-10 mx-auto py-5 flex">
       {/* Booking Section */}
-      <div className="booking w-[30%] border-2 border-black">
-        {/* 📌 Address Inputs */}
-        <div className="flex gap-4 w-full max-w-lg">
-          <input
-            type="text"
-            placeholder="Enter pickup location"
-            value={pickup}
-            onChange={(e) => setPickup(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Enter destination"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        {/* 📌 Get Route Button */}
-        <button
-          onClick={() => {}}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          Get Route
-        </button>
-      </div>
+      <RideBook />
 
       {/* Map Section */}
-      <div className="map grow border-2 border-red-500 rounded-xl">
-        {/* <SimpleMap /> */}
+      <div className="map grow border-2 border-[#e45200] rounded-xl">
         <MapsTest pickup={pickup} destination={destination} />
       </div>
     </div>
