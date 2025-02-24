@@ -9,13 +9,13 @@ const rideOptions = [
     rides: [
       {
         name: "Mini Car",
-        price: "₹120 - ₹150",
+        price: 120,
         time: "10 min",
         icon: "/economy-car1.png",
       },
       {
         name: "Auto",
-        price: "₹80 - ₹95",
+        price: 80,
         time: "5 min",
         icon: "/economy-auto.png",
       },
@@ -26,7 +26,7 @@ const rideOptions = [
     rides: [
       {
         name: "Sedan",
-        price: "₹250 - ₹300",
+        price: 250,
         time: "12 min",
         icon: "/premium-car.png",
       },
@@ -34,7 +34,11 @@ const rideOptions = [
   },
 ];
 
-export default function TypeOfRide() {
+export default function TypeOfRide({
+  onSelectFare,
+}: {
+  onSelectFare: (fare: number) => void;
+}) {
   const [selectedRide, setSelectedRide] = useState<string | null>(null);
   return (
     <div className="w-full border rounded-xl shadow-lg p-4 ">
@@ -56,7 +60,10 @@ export default function TypeOfRide() {
                     ? "border-[#e45200] bg-orange-100 shadow-md scale-105 shadow-orange-400/30"
                     : "border-gray-300 hover:border-[#e45200] hover:shadow-lg hover:scale-105 transition-all duration-300"
                 }`}
-                onClick={() => setSelectedRide(ride.name)}
+                onClick={() => {
+                  setSelectedRide(ride.name);
+                  onSelectFare(ride.price);
+                }}
               >
                 {/* Vehicle Icon */}
                 <div className="flex items-center gap-3">
@@ -74,7 +81,7 @@ export default function TypeOfRide() {
 
                 {/* Estimated Fare */}
                 <span className="text-green-600 font-semibold">
-                  {ride.price}
+                  ₹{ride.price}
                 </span>
               </div>
             ))}

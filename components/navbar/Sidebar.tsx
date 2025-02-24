@@ -28,7 +28,7 @@ const Sidebar = () => {
       <div
         className={`h-screen flex ${
           isOpen ? "w-[18%]" : "w-[5%]"
-        } transition-all duration-500 bg-[#006B60]`}
+        } transition-all duration-500 bg-[#e45200]`}
       >
         {/* Sidebar Container */}
         <div className={`h-full flex flex-col justify-evenly w-[90%] mx-auto`}>

@@ -1,40 +1,126 @@
 import React, { useState } from "react";
 import LocationSearch from "../LocationSearch";
 import TypeOfRide from "./TypeOfRide";
+import toast, { Toaster } from "react-hot-toast";
+import AutoCompleteLocation from "../AutoCompleteLocation";
 
-const RideBook = () => {
-  const [pickupLocation, setPickupLocation] = useState<RideLocation | null>(
-    null
-  );
-  const [destinationLocation, setDestinationLocation] =
-    useState<RideLocation | null>(null);
+const RideBook = ({
+  setPickupLocation,
+  setDestinationLocation,
+  pickupLocation,
+  destinationLocation,
+}: {
+  setDestinationLocation: (input: google.maps.LatLngLiteral | null) => void;
+  setPickupLocation: (input: google.maps.LatLngLiteral | null) => void;
+  destinationLocation: google.maps.LatLngLiteral | null;
+  pickupLocation: google.maps.LatLngLiteral | null;
+}) => {
   const [rideType, setRideType] = useState<"single" | "shared">("single");
-  const [paymentMethod, setPaymentMethod] = useState<"cash" | "card" | "upi">(
-    "cash"
-  );
+  const [fare, setFare] = useState<number>(0);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+  // 📌 Create Order ID
+  const createOrderId = async () => {
+    try {
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: fare }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create order");
+
+      const data = await response.json();
+      return data.orderId;
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to create order!");
+      return null;
+    }
+  };
+
+  // 📌 Process Razorpay Payment
+  const processPayment = async () => {
+    setPaymentLoading(true);
+
+    const orderId = await createOrderId();
+    if (!orderId) {
+      setPaymentLoading(false);
+      return;
+    }
+
+    const options = {
+      key: process.env.RAZORPAY_KEY_ID!,
+      amount: fare * 100,
+      currency: "INR",
+      name: "CarBuk Rides",
+      description: "Ride Payment",
+      order_id: orderId,
+      handler: async function (response: any) {
+        const verifyResponse = await fetch("/api/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderCreationId: orderId,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+          }),
+        });
+
+        const res = await verifyResponse.json();
+
+        if (res.isOk) {
+          toast.success("Payment Successful! 🚀");
+          setPaymentSuccess(true);
+        } else {
+          toast.error("Payment Failed!");
+        }
+
+        setPaymentLoading(false);
+      },
+      prefill: {
+        name: "Test User",
+        email: "test@example.com",
+        contact: "9999999999",
+      },
+      theme: { color: "#FEC400" },
+    };
+
+    const paymentObject = new (window as any).Razorpay(options);
+
+    paymentObject.open();
+    paymentObject.on("payment.failed", () => {
+      toast.error("Payment Failed! Try again.");
+      setPaymentLoading(false);
+    });
+  };
 
   return (
     <div
       className={`w-[350px] rounded-xl border shadow-sm flex flex-col gap-6 overflow-y-scroll no-scrollbar items-center p-6 
-        transition-all duration-700 ease-in-out `}
+        transition-all duration-700 ease-in-out ${
+          pickupLocation && destinationLocation ? "h-full" : "h-1/2"
+        }`}
     >
+      <Toaster position="top-center" />
       <div className="flex flex-col gap-4 w-full">
-        <LocationSearch
-          label="Pickup"
-          selectedLocation={pickupLocation}
-          onSelectedLocation={(location) => setPickupLocation(location)}
+        <AutoCompleteLocation
+          label="Enter Pickup location"
+          onLocationSelect={setPickupLocation}
+          setLocationToNull={() => setPickupLocation(null)}
         />
-
-        <LocationSearch
-          label="Destination"
-          selectedLocation={destinationLocation}
-          onSelectedLocation={(location) => setDestinationLocation(location)}
+        <AutoCompleteLocation
+          label="Enter Destination location"
+          onLocationSelect={setDestinationLocation}
+          setLocationToNull={() => setDestinationLocation(null)}
         />
       </div>
-      {
+      {pickupLocation && destinationLocation && (
         <>
           <div className="w-full">
-            <TypeOfRide />
+            <TypeOfRide onSelectFare={(fare: number) => setFare(fare)} />
           </div>
           {/* Ride Selection */}
           <div className="w-full">
@@ -68,45 +154,25 @@ const RideBook = () => {
           </div>
 
           {/* 📌 Payment Method Selection (Razorpay Style) */}
-          <div className="w-full">
-            <h3 className="text-gray-700 text-sm font-semibold mb-2">
-              Payment Method
-            </h3>
-            <div className="flex gap-3">
+          <div className="flex justify-center mt-4">
+            {paymentSuccess ? (
               <button
-                className={`flex-1 p-3 rounded-lg text-sm font-medium border border-gray-300 transition-all flex items-center justify-center gap-2
-                  ${
-                    paymentMethod === "cash"
-                      ? "border-[#e45200] text-[#e45200] shadow-sm"
-                      : "hover:border-gray-400"
-                  }`}
-                onClick={() => setPaymentMethod("cash")}
+                className="w-full p-3 rounded-lg text-white font-medium bg-[#e45200] hover:bg-[#c44100] transition-all flex items-center justify-center gap-2 shadow-md "
+                disabled
               >
-                <span>💰</span> Cash
+                ✅Payment Successful
               </button>
+            ) : (
               <button
-                className={`flex-1 p-3 rounded-lg text-sm font-medium border border-gray-300 transition-all flex items-center justify-center gap-2
-                  ${
-                    paymentMethod === "card"
-                      ? "border-[#e45200] text-[#e45200] shadow-sm"
-                      : "hover:border-gray-400"
-                  }`}
-                onClick={() => setPaymentMethod("card")}
+                className="w-full p-3 rounded-lg text-white font-medium bg-[#e45200] hover:bg-[#c44100] transition-all flex items-center justify-center gap-2 shadow-md"
+                onClick={() => processPayment()} // Call the payment function
+                disabled={paymentLoading}
               >
-                <span>💳</span> Card
+                <span>💳</span>
+                {paymentLoading ? "Processing...." : `Pay ${fare}`}{" "}
+                <span className="ml-2">→</span>
               </button>
-              <button
-                className={`flex-1 p-3 rounded-lg text-sm font-medium border border-gray-300 transition-all flex items-center justify-center gap-2
-                  ${
-                    paymentMethod === "upi"
-                      ? "border-[#e45200] text-[#e45200] shadow-sm"
-                      : "hover:border-gray-400"
-                  }`}
-                onClick={() => setPaymentMethod("upi")}
-              >
-                <span>📲</span> UPI
-              </button>
-            </div>
+            )}
           </div>
 
           {/* 📌 Confirm Booking Button */}
@@ -114,7 +180,7 @@ const RideBook = () => {
             ✅ Confirm Booking
           </button>
         </>
-      }
+      )}
     </div>
   );
 };

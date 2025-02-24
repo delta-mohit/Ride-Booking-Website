@@ -1,35 +1,35 @@
 "use client"; // ✅ Ensure the component runs only on the client
 import React, { useState } from "react";
-import dynamic from "next/dynamic";
-import getLocationSuggestion from "@/lib/getLocationSuggestion";
-import { Input } from "@/components/ui/input";
-import LocationSearch from "@/components/LocationSearch";
 import RideBook from "@/components/maps/RideBook";
-
-// ✅ Dynamically import `MapsTest` to avoid SSR issues
-const MapsTest = dynamic(() => import("@/components/maps/MapsTest"), {
-  ssr: false,
-});
+import Script from "next/script";
+import GoogleMaps from "@/components/maps/GoogleMaps";
 
 const Page = () => {
-  const [pickup, setPickup] = useState("");
-  const [destination, setDestination] = useState("");
-  const handleLocationInput = async (query: string, type: string) => {
-    const data = await getLocationSuggestion(query);
-    if (type == "pickup") {
-      console.log("Pickup Suggestions :- ", data);
-    } else {
-      console.log("Pickup Suggestions :- ", data);
-    }
-  };
+  const [pickupLocation, setPickupLocation] =
+    useState<google.maps.LatLngLiteral | null>(null);
+  const [destinationLocation, setDestinationLocation] =
+    useState<google.maps.LatLngLiteral | null>(null);
+
   return (
     <div className="w-[95%] h-full  gap-10 mx-auto py-5 flex">
+      <Script
+        id="razorpay-checkout-js"
+        src="https://checkout.razorpay.com/v1/checkout.js"
+      />
       {/* Booking Section */}
-      <RideBook />
+      <RideBook
+        pickupLocation={pickupLocation}
+        destinationLocation={destinationLocation}
+        setPickupLocation={setPickupLocation}
+        setDestinationLocation={setDestinationLocation}
+      />
 
       {/* Map Section */}
       <div className="map grow border-2 border-[#e45200] rounded-xl">
-        <MapsTest pickup={pickup} destination={destination} />
+        <GoogleMaps
+          pickupLocation={pickupLocation}
+          destinationLocation={destinationLocation}
+        />
       </div>
     </div>
   );

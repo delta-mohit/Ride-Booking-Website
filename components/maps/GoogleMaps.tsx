@@ -1,147 +1,91 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  MapContainer,
-  TileLayer,
+  GoogleMap,
+  useJsApiLoader,
   Marker,
-  Polyline,
-  useMap,
-} from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+  DirectionsService,
+  DirectionsRenderer,
+} from "@react-google-maps/api";
 
-// 📌 GoMaps.pro Base URL
-const BASE_URL = "https://maps.gomaps.pro/maps/api";
-const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-// 📌 Map Style
 const containerStyle = {
-  height: "100%",
   width: "100%",
+  height: "100%",
 };
 
-// 📌 Default Location
-const defaultCenter: [number, number] = [28.6139, 77.209];
+const defaultCenter = { lat: 28.6139, lng: 77.209 }; // Default center (New Delhi)
 
-export default function GoMapsComponent({
-  pickup,
-  destination,
+const GoogleMapsComponent = ({
+  pickupLocation,
+  destinationLocation,
 }: {
-  pickup: any;
-  destination: any;
-}) {
-  const [pickupCoords, setPickupCoords] = useState<[number, number] | null>(
-    null
-  );
-  const [destinationCoords, setDestinationCoords] = useState<
-    [number, number] | null
-  >(null);
-  const [routePath, setRoutePath] = useState<[number, number][]>([]);
+  destinationLocation: google.maps.LatLngLiteral | null;
+  pickupLocation: google.maps.LatLngLiteral | null;
+}) => {
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [directions, setDirections] =
+    useState<google.maps.DirectionsResult | null>(null);
+  const [travelTime, setTravelTime] = useState<string | null>(null);
 
-  // 📌 Fetch Coordinates from GoMaps.pro Geocoding API
-  const getCoordinates = async (address: string) => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/geocode/json?address=${encodeURIComponent(
-          address
-        )}&key=${API_KEY}`
-      );
-      const data = await response.json();
+  // 🔹 Load Google Maps API
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    libraries: ["places"],
+  });
 
-      if (data.status === "OK") {
-        const location = data.results[0].geometry.location;
-        return [location.lat, location.lng];
-      } else {
-        console.error("Geocoding Error:", data.status);
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching coordinates:", error);
-      return null;
+  const directionsCallback = (
+    response: google.maps.DirectionsResult | null,
+    status?: google.maps.DirectionsStatus
+  ) => {
+    if (response && status === google.maps.DirectionsStatus.OK) {
+      setDirections(response);
+      setTravelTime(response.routes[0].legs[0]?.duration?.text ?? "N/A");
+    } else {
+      console.error("Directions request failed with status:", status);
     }
   };
 
-  // 📌 Fetch Route from GoMaps.pro Directions API
-  const getRoute = async () => {
-    if (!pickup || !destination) return alert("Enter both locations");
-
-    const pickupLocation = await getCoordinates(pickup);
-    const destinationLocation = await getCoordinates(destination);
-
-    if (!pickupLocation || !destinationLocation)
-      return alert("Could not find locations");
-
-    setPickupCoords(pickupLocation as [number, number]);
-    setDestinationCoords(destinationLocation as [number, number]);
-
-    try {
-      const response = await fetch(
-        `${BASE_URL}/directions/json?origin=${pickup}&destination=${destination}&mode=driving&key=${API_KEY}`
-      );
-      const data = await response.json();
-
-      if (data.status === "OK") {
-        const polyline = data.routes[0].overview_polyline.points;
-        setRoutePath(decodePolyline(polyline) as [number, number][]); // Decode polyline to coordinates
-      } else {
-        console.error("Directions API Error:", data.status);
-      }
-    } catch (error) {
-      console.error("Error fetching route:", error);
+  // 🔹 Reset directions when locations change
+  useEffect(() => {
+    if (!pickupLocation || !destinationLocation) {
+      setDirections(null);
+      setTravelTime(null);
+      setTimeout(() => {
+        setDirections(null);
+        setTravelTime(null);
+      }, 100);
     }
-  };
+  }, [pickupLocation, destinationLocation]);
+
+  if (!isLoaded) {
+    return <p className="text-center text-gray-500">Loading Google Maps...</p>;
+  }
 
   return (
-    <div className="flex flex-col items-center gap-4 h-full w-full">
-      {/* 📌 Map Container */}
-      <MapContainer center={defaultCenter} zoom={12} style={containerStyle}>
-        {/* 📌 Use GoMaps.pro Tile Server */}
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={pickupLocation || defaultCenter}
+      zoom={10}
+      onLoad={(map) => setMap(map)}
+    >
+      {pickupLocation && <Marker position={pickupLocation} />}
+      {destinationLocation && <Marker position={destinationLocation} />}
 
-        {/* 📌 Pickup & Destination Markers */}
-        {pickupCoords && <Marker position={pickupCoords} />}
-        {destinationCoords && <Marker position={destinationCoords} />}
+      {/* 🔹 Show route only when both locations are selected */}
+      {pickupLocation && destinationLocation && (
+        <DirectionsService
+          options={{
+            destination: destinationLocation,
+            origin: pickupLocation,
+            travelMode: google.maps.TravelMode.DRIVING,
+          }}
+          callback={(response, status) => directionsCallback(response, status)}
+        />
+      )}
 
-        {/* 📌 Route Path */}
-        {routePath.length > 0 && (
-          <Polyline positions={routePath} color="blue" />
-        )}
-      </MapContainer>
-      {routePath.length > 0 && <Polyline positions={routePath} color="blue" />}
-    </div>
+      {directions && <DirectionsRenderer options={{ directions }} />}
+    </GoogleMap>
   );
-}
-
-// 📌 Decode Google's Encoded Polyline (Works for GoMaps too)
-const decodePolyline = (encoded: string) => {
-  let points = [];
-  let index = 0,
-    lat = 0,
-    lng = 0;
-
-  while (index < encoded.length) {
-    let shift = 0,
-      result = 0,
-      byte;
-    do {
-      byte = encoded.charCodeAt(index++) - 63;
-      result |= (byte & 0x1f) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    let deltaLat = result & 1 ? ~(result >> 1) : result >> 1;
-    lat += deltaLat;
-
-    shift = 0;
-    result = 0;
-    do {
-      byte = encoded.charCodeAt(index++) - 63;
-      result |= (byte & 0x1f) << shift;
-      shift += 5;
-    } while (byte >= 0x20);
-    let deltaLng = result & 1 ? ~(result >> 1) : result >> 1;
-    lng += deltaLng;
-
-    points.push([lat / 1e5, lng / 1e5]);
-  }
-  return points;
 };
+
+export default GoogleMapsComponent;
