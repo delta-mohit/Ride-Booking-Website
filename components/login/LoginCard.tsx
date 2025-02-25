@@ -36,8 +36,6 @@ export default function LoginCard() {
     const response = await loginUser(loginData.username, loginData.password); // ✅ Call API function
 
     if (response.success) {
-      localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
       toast.dismiss();
       toast.success("Login successful!");
       router.push("/features/book-ride");

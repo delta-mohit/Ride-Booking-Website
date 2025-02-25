@@ -1,3 +1,5 @@
+import setTokenInCookies from "@/utils/setTokenInCookies";
+
 const loginUser = async (username: string, password: string) => {
   try {
     const response = await fetch("https://dummyjson.com/auth/login", {
@@ -14,7 +16,7 @@ const loginUser = async (username: string, password: string) => {
 
     if (!response.ok)
       return { success: false, error: data.message || "Login failed!" };
-
+    await setTokenInCookies(data.accessToken, data.refreshToken);
     return { success: true, data: data };
   } catch (error: unknown) {
     if (error instanceof Error) {
