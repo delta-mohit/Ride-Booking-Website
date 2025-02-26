@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import LocationSearch from "../LocationSearch";
 import TypeOfRide from "./TypeOfRide";
 import toast, { Toaster } from "react-hot-toast";
 import AutoCompleteLocation from "../AutoCompleteLocation";
@@ -87,7 +86,6 @@ const RideBook = ({
       },
       theme: { color: "#FEC400" },
     };
-
     const paymentObject = new (window as any).Razorpay(options);
 
     paymentObject.open();
@@ -101,12 +99,12 @@ const RideBook = ({
     <div
       className={`w-[350px] rounded-xl border shadow-sm flex flex-col gap-6 overflow-y-scroll no-scrollbar items-center p-6 
         transition-all duration-700 ease-in-out ${
-          pickupLocation && destinationLocation ? "h-full" : "h-1/2"
+          pickupLocation && destinationLocation ? "h-full" : "h-fit"
         }`}
     >
       <Toaster position="top-center" />
       <div className="flex flex-col gap-4 w-full">
-        {/* <AutoCompleteLocation
+        <AutoCompleteLocation
           label="Enter Pickup location"
           onLocationSelect={setPickupLocation}
           setLocationToNull={() => setPickupLocation(null)}
@@ -115,7 +113,7 @@ const RideBook = ({
           label="Enter Destination location"
           onLocationSelect={setDestinationLocation}
           setLocationToNull={() => setDestinationLocation(null)}
-        /> */}
+        />
       </div>
       {pickupLocation && destinationLocation && (
         <>

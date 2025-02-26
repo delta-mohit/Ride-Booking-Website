@@ -112,7 +112,7 @@ export default function LoginCard() {
             {loading ? "Loading..." : "Log In"}
           </Button>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{" "}
+            Don{`&apos`}t have an account?{" "}
             <Link
               href="/signup"
               className="text-[#FEC400] font-medium hover:underline"

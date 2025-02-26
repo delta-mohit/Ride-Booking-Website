@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 
 const date = new Date();
 
-let day = date.getDate();
-let month = date.getMonth() + 1;
-let year = date.getFullYear();
+const day = date.getDate();
+const month = date.getMonth() + 1;
+const year = date.getFullYear();
 
 export default function ChatPage() {
   const [room, setRoom] = useState("");
@@ -18,9 +18,12 @@ export default function ChatPage() {
   >([]);
   const [userName, setUserName] = useState("");
   useEffect(() => {
-    socket.on("message", (data: any) => {
-      setMessages((prev) => [...prev, data]);
-    });
+    socket.on(
+      "message",
+      (data: { room: string; message: string; sender: string }) => {
+        setMessages((prev) => [...prev, data]);
+      }
+    );
 
     socket.on("user-joined", (message: string) => {
       console.log("📢 New user joined:", message);

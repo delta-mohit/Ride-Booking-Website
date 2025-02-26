@@ -50,13 +50,15 @@ export default function FeedbackSystem() {
             <div className="flex items-center justify-between">
               {/* 🔹 Driver Info */}
               <div className="flex items-center gap-4">
-                <Image
-                  src={ride.image}
-                  alt={ride.driver}
-                  width={45}
-                  height={45}
-                  className="rounded-full object-cover border"
-                />
+                <div className="h-7 w-7 rounded-full">
+                  <Image
+                    src={ride.image}
+                    alt={ride.driver}
+                    width={45}
+                    height={45}
+                    className="rounded-full w-full h-full object-cover border"
+                  />
+                </div>
                 <div>
                   <h3 className="text-lg font-medium">{ride.driver}</h3>
                   <div className="flex">

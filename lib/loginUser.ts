@@ -8,7 +8,7 @@ const loginUser = async (username: string, password: string) => {
       body: JSON.stringify({
         username,
         password,
-        expiresInMins: 120,
+        expiresInMins: 60 * 24 * 30,
       }),
     });
 

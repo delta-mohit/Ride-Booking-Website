@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 
 interface LocationSearchProps {
@@ -19,14 +19,19 @@ const AutoCompleteLocation: React.FC<LocationSearchProps> = ({
   // 🔹 Load Google Maps API
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries: ["places"],
+    libraries: useMemo(() => ["places"], []), // Prevent unnecessary reloading
   });
 
-  const onLoad = (autocompleteInstance: google.maps.places.Autocomplete) => {
-    setAutocomplete(autocompleteInstance);
-  };
+  // 📌 Stable reference for onLoad function
+  const onLoad = useCallback(
+    (autocompleteInstance: google.maps.places.Autocomplete) => {
+      setAutocomplete(autocompleteInstance);
+    },
+    []
+  );
 
-  const onPlaceChanged = () => {
+  // 📌 Stable reference for onPlaceChanged function
+  const onPlaceChanged = useCallback(() => {
     if (!autocomplete) return;
     const place = autocomplete.getPlace();
     if (place.geometry?.location) {
@@ -35,13 +40,17 @@ const AutoCompleteLocation: React.FC<LocationSearchProps> = ({
         lng: place.geometry.location.lng(),
       });
     }
-  };
+  }, [autocomplete, onLocationSelect]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      setLocationToNull(); // 🔹 Reset location when input is cleared
-    }
-  };
+  // 📌 Handle input change efficiently
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.value === "") {
+        setLocationToNull(); // 🔹 Reset location when input is cleared
+      }
+    },
+    [setLocationToNull]
+  );
 
   if (!isLoaded) {
     return (
@@ -50,15 +59,17 @@ const AutoCompleteLocation: React.FC<LocationSearchProps> = ({
   }
 
   return (
-    <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-      <input
-        type="text"
-        placeholder={label}
-        onChange={handleInputChange}
-        className="w-full p-2 border rounded-md"
-      />
-    </Autocomplete>
+    <>
+      <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+        <input
+          type="text"
+          placeholder={label}
+          onChange={handleInputChange}
+          className="w-full p-2 border rounded-md"
+        />
+      </Autocomplete>
+    </>
   );
 };
 
-export default AutoCompleteLocation;
+export default React.memo(AutoCompleteLocation); // Memoize component to prevent unnecessary re-renders

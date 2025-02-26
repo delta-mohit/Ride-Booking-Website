@@ -1,24 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { FaCamera, FaTrash, FaEdit, FaSave } from "react-icons/fa";
-
-const rideStats = [
-  { label: "Total Rides", value: 123, icon: "🚖" },
-  { label: "Cancelled Rides", value: 56, icon: "🚫" },
-  { label: "Distance Travelled", value: 357, icon: "🚕" },
-  { label: "Total Spending", value: "₹8,520", icon: "💰" },
-];
-
+import { FaCamera, FaEdit, FaSave } from "react-icons/fa";
+import { fetchUserData } from "@/lib/getUserDetails";
+import { rideStats } from "@/utils/staticData";
 export default function Profile() {
   const [user, setUser] = useState({
-    name: "Mohit Saini",
-    userName: "delta-mohit",
-    email: "msmohit@gmail.com",
-    phone: "+91 8209052781",
-    image: "/user-avatar.png",
+    name: "Loading...",
+    userName: "Loading...",
+    email: "Loading...",
+    phone: "Loading...",
   });
+  // Function to fetch user data only when needed
+  const loadUserData = useCallback(async () => {
+    const userData = await fetchUserData();
+    if (userData) {
+      setUser({
+        name: userData.firstName + " " + userData.lastName,
+        userName: userData.username,
+        email: userData.email,
+        phone: userData.phone,
+      });
+    }
+  }, []); // No dependencies, runs only on mount
+
+  useEffect(() => {
+    loadUserData(); // Call function when component mounts
+  }, [loadUserData]);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -27,7 +36,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="w-full h-screen p-6 flex flex-col justify-evenly lg:flex-row gap-6">
+    <div className="w-full h-screen overflow-auto no-scrollbar p-6 flex flex-col justify-evenly lg:flex-row gap-6">
       {/* Left Side - Profile Details */}
       <div className="bg-white p-6 rounded-lg shadow-md w-full lg:w-[45%]">
         <h2 className="text-xl font-semibold mb-4">Profile Management</h2>

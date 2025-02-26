@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { socket } from "@/utils/socketClient";
+import React, { useState } from "react";
 
 const ChatForm = ({
   onSendMessage,

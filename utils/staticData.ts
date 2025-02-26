@@ -637,3 +637,10 @@ export const RideFeedbackData = [
     feedback: null,
   },
 ];
+
+export const rideStats = [
+  { label: "Total Rides", value: 123, icon: "🚖" },
+  { label: "Cancelled Rides", value: 56, icon: "🚫" },
+  { label: "Distance Travelled", value: 357, icon: "🚕" },
+  { label: "Total Spending", value: "₹8,520", icon: "💰" },
+];
