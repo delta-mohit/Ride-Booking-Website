@@ -6,9 +6,9 @@ import GoogleMaps from "@/components/maps/GoogleMaps";
 
 const Page = () => {
   const [pickupLocation, setPickupLocation] =
-    useState<google.maps.LatLngLiteral | null>(null);
+    useState<google.maps.LatLngLiteral | null>({ lat: 123, lng: 123 });
   const [destinationLocation, setDestinationLocation] =
-    useState<google.maps.LatLngLiteral | null>(null);
+    useState<google.maps.LatLngLiteral | null>({ lat: 123, lng: 123 });
 
   return (
     <div className="w-[95%] h-full  gap-10 mx-auto py-5 flex">
@@ -26,10 +26,10 @@ const Page = () => {
 
       {/* Map Section */}
       <div className="map grow border-2 border-[#e45200] rounded-xl">
-        <GoogleMaps
+        {/* <GoogleMaps
           pickupLocation={pickupLocation}
           destinationLocation={destinationLocation}
-        />
+        /> */}
       </div>
     </div>
   );

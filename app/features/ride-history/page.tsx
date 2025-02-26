@@ -2,90 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-
-// ✅ Dummy ride history data
-const rideHistoryData = [
-  {
-    id: 1,
-    rider: "Joe Beer",
-    riderImage: "/driver.png",
-    date: "14 Sept 2023 at 08:30 AM",
-    driver: "Ellen Tromp",
-    vehicle: "Sedan",
-    status: "Booked",
-    fare: "$885.00",
-  },
-  {
-    id: 2,
-    rider: "Heather Ullrich",
-    riderImage: "/driver.png",
-    date: "15 Sept 2023 at 02:00 AM",
-    driver: "Ellen Hill",
-    vehicle: "MPV",
-    status: "Cancel",
-    fare: "$885.00",
-  },
-  {
-    id: 3,
-    rider: "Heather Walsh",
-    riderImage: "/driver.png",
-    date: "15 Sept 2023 at 12:30 PM",
-    driver: "Howard G.",
-    vehicle: "Mini",
-    status: "Completed",
-    fare: "$885.00",
-  },
-  {
-    id: 4,
-    rider: "Jared Wyman",
-    riderImage: "/driver.png",
-    date: "15 Sept 2023 at 02:00 AM",
-    driver: "Coll Tromp",
-    vehicle: "MPV",
-    status: "Cancel",
-    fare: "$885.00",
-  },
-  {
-    id: 5,
-    rider: "Micheal Hessel",
-    riderImage: "/driver.png",
-    date: "14 Sept 2023 at 08:30 AM",
-    driver: "Sam Effertz",
-    vehicle: "Sedan",
-    status: "Booked",
-    fare: "$885.00",
-  },
-  {
-    id: 6,
-    rider: "Lauren Price",
-    riderImage: "/driver.png",
-    date: "15 Sept 2023 at 02:00 AM",
-    driver: "Miss Merle",
-    vehicle: "MPV",
-    status: "Cancel",
-    fare: "$885.00",
-  },
-  {
-    id: 7,
-    rider: "Micheal Hessel",
-    riderImage: "/driver.png",
-    date: "14 Sept 2023 at 08:30 AM",
-    driver: "Sam Effertz",
-    vehicle: "Sedan",
-    status: "Booked",
-    fare: "$885.00",
-  },
-  {
-    id: 8,
-    rider: "Lauren Price",
-    riderImage: "/driver.png",
-    date: "15 Sept 2023 at 02:00 AM",
-    driver: "Miss Merle",
-    vehicle: "MPV",
-    status: "Cancel",
-    fare: "$885.00",
-  },
-];
+import { RideHistoryData } from "@/utils/staticData";
 
 export default function RideHistory() {
   const [filterStatus, setFilterStatus] = useState("All");
@@ -103,14 +20,14 @@ export default function RideHistory() {
   }, []);
 
   // 📌 Filter rides based on status & search input
-  const filteredRides = rideHistoryData.filter(
+  const filteredRides = RideHistoryData.filter(
     (ride) =>
       (filterStatus === "All" || ride.status === filterStatus) &&
       ride.rider.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className="w-full h-full lg:w-[82%] xl:w-[90%] mx-auto p-6 bg-white rounded-lg shadow-md flex flex-col justify-between">
+    <div className="w-full h-full lg:w-[82%] xl:w-[90%] mx-auto px-6 py-3 bg-white rounded-lg shadow-md flex flex-col justify-between">
       <h2 className="text-xl font-semibold text-gray-800">📜 Ride History</h2>
 
       {/* Filters & Search */}
@@ -175,13 +92,15 @@ export default function RideHistory() {
                   <tr key={ride.id} className="border-t hover:bg-gray-100">
                     <td className="py-3 px-4">{index + 1}</td>
                     <td className="py-3 px-4 flex items-center gap-3">
-                      <Image
-                        src={ride.riderImage}
-                        alt={ride.rider}
-                        width={30}
-                        height={30}
-                        className="rounded-full object-cover"
-                      />
+                      <div className="rounded-full h-6 w-6">
+                        <Image
+                          src={ride.riderImage}
+                          alt={ride.rider}
+                          width={30}
+                          height={30}
+                          className="rounded-full h-full w-full object-cover"
+                        />
+                      </div>
                       {ride.rider}
                     </td>
                     <td className="py-3 px-4">{ride.date}</td>

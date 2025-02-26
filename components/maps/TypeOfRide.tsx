@@ -1,52 +1,48 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-
-const rideOptions = [
-  {
-    category: "Economy",
-    rides: [
-      {
-        name: "Mini Car",
-        price: 120,
-        time: "10 min",
-        icon: "/economy-car1.png",
-      },
-      {
-        name: "Auto",
-        price: 80,
-        time: "5 min",
-        icon: "/economy-auto.png",
-      },
-    ],
-  },
-  {
-    category: "Premium",
-    rides: [
-      {
-        name: "Sedan",
-        price: 250,
-        time: "12 min",
-        icon: "/premium-car.png",
-      },
-    ],
-  },
-];
+import { useEffect, useState } from "react";
+import {
+  SharedRidePricingData,
+  SingleRidePricingData,
+} from "@/utils/staticData";
 
 export default function TypeOfRide({
   onSelectFare,
+  rideType,
 }: {
   onSelectFare: (fare: number) => void;
+  rideType: string;
 }) {
   const [selectedRide, setSelectedRide] = useState<string | null>(null);
+  const [index, setIndex] = useState<number>(0);
+  useEffect(() => {
+    setIndex(Math.floor(Math.random() * SingleRidePricingData.length));
+  }, []); // Runs only once on client-side
+
+  useEffect(() => {
+    //as the ride type change then payment need to change
+    const data =
+      rideType === "single"
+        ? SingleRidePricingData[index]
+        : SharedRidePricingData[index];
+    let newFare = data
+      .flatMap((category) => category.rides)
+      .find((ride) => ride.name === selectedRide)?.price;
+    if (newFare == undefined) newFare = 0;
+    onSelectFare(newFare as number);
+  }, [rideType]);
+
   return (
     <div className="w-full border rounded-xl shadow-lg p-4 ">
       <h2 className="text-lg font-semibold text-[#e45200] text-center pb-2">
         Choose Your Ride
       </h2>
 
-      {rideOptions.map((section) => (
+      {(rideType == "single"
+        ? SingleRidePricingData[index]
+        : SharedRidePricingData[index]
+      ).map((section) => (
         <div key={section.category} className="pb-4">
           <h3 className="text-gray-600 text-sm font-medium">
             {section.category}

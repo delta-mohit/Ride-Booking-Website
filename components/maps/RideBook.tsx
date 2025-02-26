@@ -106,7 +106,7 @@ const RideBook = ({
     >
       <Toaster position="top-center" />
       <div className="flex flex-col gap-4 w-full">
-        <AutoCompleteLocation
+        {/* <AutoCompleteLocation
           label="Enter Pickup location"
           onLocationSelect={setPickupLocation}
           setLocationToNull={() => setPickupLocation(null)}
@@ -115,12 +115,15 @@ const RideBook = ({
           label="Enter Destination location"
           onLocationSelect={setDestinationLocation}
           setLocationToNull={() => setDestinationLocation(null)}
-        />
+        /> */}
       </div>
       {pickupLocation && destinationLocation && (
         <>
           <div className="w-full">
-            <TypeOfRide onSelectFare={(fare: number) => setFare(fare)} />
+            <TypeOfRide
+              onSelectFare={(fare: number) => setFare(fare)}
+              rideType={rideType}
+            />
           </div>
           {/* Ride Selection */}
           <div className="w-full">
