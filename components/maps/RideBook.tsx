@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TypeOfRide from "./TypeOfRide";
 import toast, { Toaster } from "react-hot-toast";
 import AutoCompleteLocation from "../AutoCompleteLocation";
-
+import DriverAssigned from "../DriverAssigned";
 const RideBook = ({
   setPickupLocation,
   setDestinationLocation,
@@ -80,7 +80,7 @@ const RideBook = ({
         setPaymentLoading(false);
       },
       prefill: {
-        name: "Test User",
+        name: "Test User. Enter Test Razorpay Card only",
         email: "test@example.com",
         contact: "9999999999",
       },
@@ -94,95 +94,104 @@ const RideBook = ({
       setPaymentLoading(false);
     });
   };
-
+  const [booked, setBooked] = useState<boolean>(true);
   return (
-    <div
-      className={`w-[350px] rounded-xl border shadow-sm flex flex-col gap-6 overflow-y-scroll no-scrollbar items-center p-6 
+    <>
+      {booked ? (
+        <DriverAssigned />
+      ) : (
+        <div
+          className={`w-[350px] rounded-xl border shadow-sm flex flex-col gap-6 overflow-y-scroll no-scrollbar items-center p-6 
         transition-all duration-700 ease-in-out ${
           pickupLocation && destinationLocation ? "h-full" : "h-fit"
         }`}
-    >
-      <Toaster position="top-center" />
-      <div className="flex flex-col gap-4 w-full">
-        <AutoCompleteLocation
-          label="Enter Pickup location"
-          onLocationSelect={setPickupLocation}
-          setLocationToNull={() => setPickupLocation(null)}
-        />
-        <AutoCompleteLocation
-          label="Enter Destination location"
-          onLocationSelect={setDestinationLocation}
-          setLocationToNull={() => setDestinationLocation(null)}
-        />
-      </div>
-      {pickupLocation && destinationLocation && (
-        <>
-          <div className="w-full">
-            <TypeOfRide
-              onSelectFare={(fare: number) => setFare(fare)}
-              rideType={rideType}
+        >
+          <Toaster position="top-center" />
+          <div className="flex flex-col gap-4 w-full">
+            <AutoCompleteLocation
+              label="Enter Pickup location"
+              onLocationSelect={setPickupLocation}
+              setLocationToNull={() => setPickupLocation(null)}
+            />
+            <AutoCompleteLocation
+              label="Enter Destination location"
+              onLocationSelect={setDestinationLocation}
+              setLocationToNull={() => setDestinationLocation(null)}
             />
           </div>
-          {/* Ride Selection */}
-          <div className="w-full">
-            <h3 className="text-gray-700 text-sm font-semibold mb-2">
-              Select Ride Type
-            </h3>
-            <div className="flex gap-3">
-              <button
-                className={`flex-1 p-3 rounded-lg font-medium border border-gray-300 transition-all
+          {pickupLocation && destinationLocation && (
+            <>
+              <div className="w-full">
+                <TypeOfRide
+                  onSelectFare={(fare: number) => setFare(fare)}
+                  rideType={rideType}
+                />
+              </div>
+              {/* Ride Selection */}
+              <div className="w-full">
+                <h3 className="text-gray-700 text-sm font-semibold mb-2">
+                  Select Ride Type
+                </h3>
+                <div className="flex gap-3">
+                  <button
+                    className={`flex-1 p-3 rounded-lg font-medium border border-gray-300 transition-all
                   ${
                     rideType === "single"
                       ? "border-[#e45200] text-[#e45200] shadow-sm"
                       : "hover:border-gray-400 text-gray-400 opacity-90"
                   }`}
-                onClick={() => setRideType("single")}
-              >
-                Myself
-              </button>
-              <button
-                className={`flex-1 p-3 rounded-lg font-medium border border-gray-300 transition-all
+                    onClick={() => setRideType("single")}
+                  >
+                    Myself
+                  </button>
+                  <button
+                    className={`flex-1 p-3 rounded-lg font-medium border border-gray-300 transition-all
                   ${
                     rideType === "shared"
                       ? "border-[#e45200] text-[#e45200] shadow-sm"
                       : "hover:border-gray-400 text-gray-400 opacity-90"
                   }`}
-                onClick={() => setRideType("shared")}
-              >
-                Shared Ride
-              </button>
-            </div>
-          </div>
+                    onClick={() => setRideType("shared")}
+                  >
+                    Shared Ride
+                  </button>
+                </div>
+              </div>
 
-          {/* 📌 Payment Method Selection (Razorpay Style) */}
-          <div className="flex justify-center mt-4">
-            {paymentSuccess ? (
-              <button
-                className="w-full p-3 rounded-lg text-white font-medium bg-[#e45200] hover:bg-[#c44100] transition-all flex items-center justify-center gap-2 shadow-md "
-                disabled
-              >
-                ✅Payment Successful
-              </button>
-            ) : (
-              <button
-                className="w-full p-3 rounded-lg text-white font-medium bg-[#e45200] hover:bg-[#c44100] transition-all flex items-center justify-center gap-2 shadow-md"
-                onClick={() => processPayment()} // Call the payment function
-                disabled={paymentLoading}
-              >
-                <span>💳</span>
-                {paymentLoading ? "Processing...." : `Pay ${fare}`}{" "}
-                <span className="ml-2">→</span>
-              </button>
-            )}
-          </div>
+              {/* 📌 Payment Method Selection (Razorpay Style) */}
+              <div className="flex justify-center mt-4">
+                {paymentSuccess ? (
+                  <button
+                    className="w-full p-3 rounded-lg text-white font-medium bg-[#e45200] hover:bg-[#c44100] transition-all flex items-center justify-center gap-2 shadow-md "
+                    disabled
+                  >
+                    ✅Payment Successful
+                  </button>
+                ) : (
+                  <button
+                    className="w-full p-3 rounded-lg text-white font-medium bg-[#e45200] hover:bg-[#c44100] transition-all flex items-center justify-center gap-2 shadow-md"
+                    onClick={() => processPayment()} // Call the payment function
+                    disabled={paymentLoading}
+                  >
+                    <span>💳</span>
+                    {paymentLoading ? "Processing...." : `Pay ${fare}`}{" "}
+                    <span className="ml-2">→</span>
+                  </button>
+                )}
+              </div>
 
-          {/* 📌 Confirm Booking Button */}
-          <button className="w-full border border-[#e45200] text-[#e45200] font-semibold py-3 rounded-lg mt-4 transition-all duration-300 hover:bg-[#e45200] hover:text-white">
-            ✅ Confirm Booking
-          </button>
-        </>
+              {/* 📌 Confirm Booking Button */}
+              <button
+                className="w-full border border-[#e45200] text-[#e45200] font-semibold py-3 rounded-lg mt-4 transition-all duration-300 hover:bg-[#e45200] hover:text-white"
+                onClick={() => setBooked(true)}
+              >
+                ✅ Confirm Booking
+              </button>
+            </>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

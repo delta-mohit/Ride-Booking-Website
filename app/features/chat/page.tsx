@@ -53,7 +53,9 @@ export default function ChatPage() {
     <div className="flex h-screen py-10 justify-center w-full">
       {!joined ? (
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-bold text-center">Join a Room</h1>
+          <h1 className="text-2xl font-bold text-center">
+            Join/Create Chat Room
+          </h1>
           <input
             type="text"
             value={userName}
@@ -72,12 +74,12 @@ export default function ChatPage() {
             className="px-3 py-2 w-fit mx-auto text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 transition-all flex items-center gap-2"
             onClick={handleJoinRoom}
           >
-            Join Room
+            Join/Create Room
           </button>
         </div>
       ) : (
         <div className="w-3/4 h-full mx-auto">
-          <h1 className="mb-4 text-2xl font-bold">Room: {room}</h1>
+          <h1 className="mb-4 text-2xl font-bold">ChatRoom: {room}</h1>
           <div className="h-3/4 w-full overflow-y-auto no-scrollbar p-4 mb-4 bg-gray-200 border-2 border-orange-600 rounded-lg">
             <p className="w-fit mx-auto px-2 py-1 mb-2 rounded-lg text-xs bg-black text-gray-200">
               {day + "-" + month + "-" + year}
