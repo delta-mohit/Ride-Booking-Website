@@ -28,7 +28,7 @@ const Page = () => {
             setDestinationLocation={setDestinationLocation}
           />
         </div>
-        <div className="map w-full h-1/2 lg:h-full lg:grow border-2 border-[#e45200] rounded-xl">
+        <div className="map w-full h-1/2 lg:h-full lg:grow border-2 border-[#e45200] rounded-xl -z-10">
           {console.log("Page Rerender") as ReactNode}
           <GoogleMaps
             pickupLocation={pickupLocation}

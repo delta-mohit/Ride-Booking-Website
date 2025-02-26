@@ -49,7 +49,7 @@ export default function LoginCard() {
   return (
     <div className="w-full flex items-center justify-center ">
       <Toaster position="top-center" />
-      <Card className="w-[70%] shadow-lg border-none">
+      <Card className="w-[85%] sm:w-[70%] shadow-lg border-none">
         <CardHeader className="text-center">
           <CardTitle className="text-5xl font-bold text-gray-800 dark:text-white">
             <span className="text-[#006b60]">Car</span>

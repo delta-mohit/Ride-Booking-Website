@@ -1,19 +1,26 @@
+import Link from "next/link";
+
 const SideItem = ({
+  href,
   icon,
   text,
   isOpen,
 }: {
+  href: string;
   icon: JSX.Element;
   text: string;
   isOpen: boolean;
 }) => {
   return (
-    <div
-      className={`flex w-full min-h-[60px] py-3 px-4 rounded-lg cursor-pointer hover:bg-[#649b92] text-white space-x-5`}
+    <Link
+      href={href}
+      className={`flex items-center w-full py-3 ${
+        isOpen ? "px-4" : ""
+      } rounded-lg cursor-pointer hover:bg-orange-500 text-white space-x-5`}
     >
       {/* Ensure the icon is centered when closed */}
       <div
-        className={`flex items-center -translate-y-1 ${
+        className={`flex items-center ${
           !isOpen ? "justify-center w-full" : ""
         }`}
       >
@@ -21,8 +28,10 @@ const SideItem = ({
       </div>
 
       {/* Show text only when open */}
-      {isOpen && <span className="text-lg whitespace-nowrap">{text}</span>}
-    </div>
+      {isOpen && (
+        <span className="text-sm font-medium whitespace-nowrap">{text}</span>
+      )}
+    </Link>
   );
 };
 
