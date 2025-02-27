@@ -94,12 +94,9 @@ export default function LoginCard() {
               />
             </div>
             <div className="text-right">
-              <Link
-                href="/forgot-password"
-                className="text-gray-500 text-sm hover:underline"
-              >
+              <div className="text-gray-500 text-sm hover:underline">
                 Forgot password?
-              </Link>
+              </div>
             </div>
           </form>
         </CardContent>

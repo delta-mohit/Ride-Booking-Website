@@ -61,7 +61,7 @@ const Navbar = () => {
       <Toaster position="top-center" />
 
       {/* Navbar for Smaller Screens */}
-      <div className="fixed top-1 left-1 rounded-lg lg:hidden  h-10 w-10  bg-orange-600 text-white">
+      <div className="z-10 fixed top-1 left-1 rounded-lg lg:hidden  h-10 w-10  bg-orange-600 text-white">
         {/* Sidebar Toggle Button */}
         <button
           onClick={() => setIsOpen(true)}
@@ -73,7 +73,7 @@ const Navbar = () => {
 
       {/* Small Sidebar for Mobile */}
       <div
-        className={`z-10 fixed top-0 left-0 h-[100%] w-[50%] bg-orange-700 text-white shadow-lg  p-4 transition-transform duration-300 ${
+        className={`z-50 fixed top-0 left-0 h-[100%] w-[50%] sm:w-[30%] bg-[#e45200] text-white shadow-lg  p-4 transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -120,7 +120,7 @@ const Navbar = () => {
       {/* Background overlay (click to close sidebar) */}
       {isOpen && (
         <div
-          className=" fixed top-0 left-0 w-full h-full bg-black opacity-30"
+          className="z-10 fixed top-0 left-0 w-full h-full bg-black opacity-30"
           onClick={() => setIsOpen(false)}
         ></div>
       )}

@@ -17,6 +17,7 @@ import {
 const containerStyle = {
   width: "100%",
   height: "100%",
+  borderRadius: "8px",
 };
 
 const defaultCenter = { lat: 28.6139, lng: 77.209 }; // Default center (New Delhi)
