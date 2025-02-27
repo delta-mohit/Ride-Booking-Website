@@ -7,6 +7,7 @@ import { DRIVERS } from "@/utils/staticData";
 import { useEffect, useState } from "react";
 const DriverAssigned = () => {
   const [driver, setDriver] = useState({
+    id: 0,
     name: "Loading...",
     carModel: "Loading...",
     carNumber: "Loading...",
@@ -62,7 +63,7 @@ const DriverAssigned = () => {
             ⏳ ETA: <span className="font-bold">{driver.eta} min</span>
           </p>
           <Link
-            href={"/features/chat?id=1"}
+            href={`/features/chat`}
             className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
           >
             <LuMessageCircle size={20} className="mr-2" /> Message

@@ -647,9 +647,9 @@ export const rideStats = [
 
 export const DRIVERS = [
   {
-    id: "6",
+    id: 6,
     name: "Olivia Wilson",
-    userName: "oliviaw",
+    username: "oliviaw",
     carModel: "Toyota Camry",
     carNumber: "AB 1234 XYZ",
     rating: 4.8,
@@ -657,9 +657,9 @@ export const DRIVERS = [
     eta: 10,
   },
   {
-    id: "7",
+    id: 7,
     name: "Alexander Jones",
-    userName: "alexanderj",
+    username: "alexanderj",
     carModel: "Honda Accord",
     carNumber: "CD 5678 LMN",
     rating: 4.7,
@@ -667,9 +667,9 @@ export const DRIVERS = [
     eta: 12,
   },
   {
-    id: "8",
+    id: 8,
     name: "Ava Taylor",
-    userName: "avat",
+    username: "avat",
     carModel: "Ford Mustang",
     carNumber: "EF 9012 OPQ",
     rating: 4.9,
@@ -677,9 +677,9 @@ export const DRIVERS = [
     eta: 8,
   },
   {
-    id: "9",
+    id: 9,
     name: "Ethan Martinez",
-    userName: "ethanm",
+    username: "ethanm",
     carModel: "Tesla Model 3",
     carNumber: "GH 3456 RST",
     rating: 4.6,
@@ -687,9 +687,9 @@ export const DRIVERS = [
     eta: 9,
   },
   {
-    id: "11",
+    id: 11,
     name: "Liam Garcia",
-    userName: "liamg",
+    username: "liamg",
     carModel: "Chevrolet Malibu",
     carNumber: "IJ 7890 UVW",
     rating: 4.8,

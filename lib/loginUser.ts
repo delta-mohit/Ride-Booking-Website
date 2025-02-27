@@ -16,7 +16,12 @@ const loginUser = async (username: string, password: string) => {
 
     if (!response.ok)
       return { success: false, error: data.message || "Login failed!" };
-    await setTokenInCookies(data.accessToken, data.refreshToken);
+    await setTokenInCookies(
+      data.id,
+      data.username,
+      data.accessToken,
+      data.refreshToken
+    );
     return { success: true, data: data };
   } catch (error: unknown) {
     if (error instanceof Error) {

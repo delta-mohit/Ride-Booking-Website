@@ -94,7 +94,7 @@ const RideBook = ({
       setPaymentLoading(false);
     });
   };
-  const [booked, setBooked] = useState<boolean>(true);
+  const [booked, setBooked] = useState<boolean>(false);
   return (
     <>
       {booked ? (

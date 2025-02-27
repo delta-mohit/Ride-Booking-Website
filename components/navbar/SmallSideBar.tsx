@@ -43,8 +43,16 @@ const Navbar = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await logOut();
-    toast.success("Logged out successfully!");
+    toast.promise(
+      async () => {
+        await logOut();
+      },
+      {
+        loading: "Logging out...",
+        success: "Logged out successfully!",
+        error: "Error when log out",
+      }
+    );
     router.push("/login");
   };
 

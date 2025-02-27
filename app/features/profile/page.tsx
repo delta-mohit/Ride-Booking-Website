@@ -8,7 +8,7 @@ import { rideStats } from "@/utils/staticData";
 export default function Profile() {
   const [user, setUser] = useState({
     name: "Loading...",
-    userName: "Loading...",
+    username: "Loading...",
     email: "Loading...",
     phone: "Loading...",
   });
@@ -18,7 +18,7 @@ export default function Profile() {
     if (userData) {
       setUser({
         name: userData.firstName + " " + userData.lastName,
-        userName: userData.username,
+        username: userData.username,
         email: userData.email,
         phone: userData.phone,
       });
@@ -85,8 +85,8 @@ export default function Profile() {
                 </label>
                 <input
                   type="text"
-                  name="userName"
-                  value={user.userName}
+                  name="username"
+                  value={user.username}
                   onChange={handleInputChange}
                   className="w-full p-1 border border-gray-500 rounded-md mt-1  text-xs lg:text-lg"
                 />
@@ -138,7 +138,7 @@ export default function Profile() {
                   User Name
                 </label>
                 <p className="text-xs p-1 mt-1 lg:text-lg font-medium overflow-auto">
-                  {user.userName}
+                  {user.username}
                 </p>
               </div>
 

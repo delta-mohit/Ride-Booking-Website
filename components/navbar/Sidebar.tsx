@@ -41,9 +41,17 @@ const links = [
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const handleLogout = () => {
-    logOut();
-    toast.success("Logged out successfully!");
+  const handleLogout = async () => {
+    toast.promise(
+      async () => {
+        await logOut();
+      },
+      {
+        loading: "Logging out...",
+        success: "Logged out successfully!",
+        error: "Error when log out",
+      }
+    );
     router.push("/login");
   };
   return (
