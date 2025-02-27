@@ -183,7 +183,7 @@ export default function Profile() {
           {rideStats.map((stat, index) => (
             <div
               key={index}
-              className="bg-white p-4 lg:w-3/4 rounded-lg shadow-md text-center"
+              className="bg-white p-4 h-full w-full lg:w-3/4 rounded-lg shadow-md text-center"
             >
               <div className="text-3xl">{stat.icon}</div>
               <p className="text-gray-600 text-sm">{stat.label}</p>

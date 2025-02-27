@@ -4,32 +4,32 @@ import {
   FaBars,
   FaTimes,
   FaHistory,
-  FaCreditCard,
-  FaCommentAlt,
   FaUser,
-  FaMapMarkerAlt,
   FaSignOutAlt,
 } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import Link from "next/link";
 import logOut from "@/lib/logOut";
+import { RiRidingFill } from "react-icons/ri";
+import { BsChatDotsFill } from "react-icons/bs";
+import { PiChatTextFill } from "react-icons/pi";
 
-export const links = [
+const links = [
   {
     href: "/features/book-ride",
     label: "Book Ride",
-    icon: <FaCreditCard size={20} />,
+    icon: <RiRidingFill size={24} />,
   },
   {
     href: "/features/chat",
     label: "Chat with Driver",
-    icon: <FaMapMarkerAlt size={20} />,
+    icon: <BsChatDotsFill size={20} />,
   },
   {
     href: "/features/feedback",
     label: "Feedback",
-    icon: <FaCommentAlt size={20} />,
+    icon: <PiChatTextFill size={24} />,
   },
   {
     href: "/features/ride-history",
@@ -46,6 +46,7 @@ const Navbar = () => {
     toast.promise(
       async () => {
         await logOut();
+        router.push("/login");
       },
       {
         loading: "Logging out...",
@@ -53,7 +54,6 @@ const Navbar = () => {
         error: "Error when log out",
       }
     );
-    router.push("/login");
   };
 
   return (
@@ -102,7 +102,7 @@ const Navbar = () => {
             href="/features/profile"
             className="flex items-center gap-3 px-3 py-4 text-sm hover:bg-orange-500 rounded-md"
           >
-            <FaUser size={20} />
+            <FaUser size={22} />
             <span>Profile</span>
           </Link>
 

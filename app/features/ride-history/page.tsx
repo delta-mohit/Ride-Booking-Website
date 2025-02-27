@@ -31,7 +31,7 @@ export default function RideHistory() {
       <h2 className="text-xl font-semibold text-gray-800">📜 Ride History</h2>
 
       {/* Filters & Search */}
-      <div className="flex flex-wrap gap-2 sm:gap-4">
+      <div className="flex flex-wrap gap-2 sm:gap-4 py-2">
         {/* Search Input */}
         <input
           type="text"
@@ -61,7 +61,9 @@ export default function RideHistory() {
 
         {/* Reset Filters Button */}
         <button
-          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-all"
+          className={`bg-orange-500 text-white ${
+            isMobile ? "px-2 py-1" : "px-4 py-2"
+          }  rounded-lg hover:bg-orange-600 transition-all`}
           onClick={() => {
             setSearch("");
             setFilterStatus("All");

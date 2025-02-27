@@ -4,12 +4,13 @@ import {
   FaBars,
   FaTimes,
   FaHistory,
-  FaCreditCard,
-  FaCommentAlt,
   FaUser,
-  FaMapMarkerAlt,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { RiRidingFill } from "react-icons/ri";
+import { PiChatTextFill } from "react-icons/pi";
+import { BsChatDotsFill } from "react-icons/bs";
+
 import SideItem from "./SideItem";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
@@ -19,17 +20,17 @@ const links = [
   {
     href: "/features/book-ride",
     label: "Book Ride",
-    icon: <FaCreditCard size={20} />,
+    icon: <RiRidingFill size={24} />,
   },
   {
     href: "/features/chat",
     label: "Chat with Driver",
-    icon: <FaMapMarkerAlt size={20} />,
+    icon: <BsChatDotsFill size={20} />,
   },
   {
     href: "/features/feedback",
     label: "Feedback",
-    icon: <FaCommentAlt size={20} />,
+    icon: <PiChatTextFill size={24} />,
   },
   {
     href: "/features/ride-history",
