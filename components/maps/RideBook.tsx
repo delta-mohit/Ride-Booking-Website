@@ -134,22 +134,22 @@ const RideBook = ({
                 </h3>
                 <div className="flex gap-3">
                   <button
-                    className={`flex-1 p-3 rounded-lg font-medium border border-gray-300 transition-all
+                    className={`flex-1 p-3 rounded-lg font-medium border  transition-all
                   ${
                     rideType === "single"
                       ? "border-[#e45200] text-[#e45200] shadow-sm"
-                      : "hover:border-gray-400 text-gray-400 opacity-90"
+                      : "border-gray-400 text-gray-400 opacity-90"
                   }`}
                     onClick={() => setRideType("single")}
                   >
                     Myself
                   </button>
                   <button
-                    className={`flex-1 p-3 rounded-lg font-medium border border-gray-300 transition-all
+                    className={`flex-1 p-3 rounded-lg font-medium border transition-all
                   ${
                     rideType === "shared"
                       ? "border-[#e45200] text-[#e45200] shadow-sm"
-                      : "hover:border-gray-400 text-gray-400 opacity-90"
+                      : "border-gray-400 text-gray-400 opacity-90"
                   }`}
                     onClick={() => setRideType("shared")}
                   >
@@ -165,7 +165,7 @@ const RideBook = ({
                     className="w-full p-3 rounded-lg text-white font-medium bg-[#e45200] hover:bg-[#c44100] transition-all flex items-center justify-center gap-2 shadow-md "
                     disabled
                   >
-                    ✅Payment Successful
+                    Payment Successful
                   </button>
                 ) : (
                   <button
@@ -184,8 +184,9 @@ const RideBook = ({
               <button
                 className="w-full border border-[#e45200] text-[#e45200] font-semibold py-3 rounded-lg mt-4 transition-all duration-300 hover:bg-[#e45200] hover:text-white"
                 onClick={() => setBooked(true)}
+                disabled={!paymentSuccess}
               >
-                ✅ Confirm Booking
+                Confirm Booking
               </button>
             </>
           )}
